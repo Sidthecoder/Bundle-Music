@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html >
+   <head>
+      <meta charset="UTF-8">
+      <title>Music App</title>
+      <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+      <style>
+         /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
+         @import url(https://fonts.googleapis.com/css?family=Raleway);
+         @import url(https://fonts.googleapis.com/css?family=Fira+Mono);
+         html, body {
+         background: url("https://psg.i.lithium.com/t5/image/serverpage/image-id/143848i2A430B70194605E0?v=v2") no-repeat center center fixed; 
+         -webkit-background-size: cover;
+         -moz-background-size: cover;
+         -o-background-size: cover;
+         background-size: cover;
+         font-family: Raleway, sans-serif;
+         }
+         h1 {
+         text-align: center;
+         font-weight: bold;
+         font-size: 70px;
+         color: silver;
+         padding-top: 1px;
+         }
+         .wrap {
+         background: #231f20; 
+         bottom: 0;
+         display: flex;
+         height: 400px;
+         left: 0;
+         margin: auto;
+         position: absolute;
+         right: 0;
+         top: 0;
+         width: 800px;
+         }
+         audio {
+         display: none;
+         }
+         .player {
+         background-color: rgba(0, 0, 0, 0.5);
+         color: white;
+         flex-grow: 0;
+         height: 100%;
+         position: relative;
+         width: 50%;
+         }
+         .player .cover {
+         background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent);
+         background-size: 100% 100%;
+         height: 100%;
+         }
+         .player .controls {
+         display: flex;
+         height: 13.33%;
+         left: 17.5%;
+         position: absolute;
+         top: 5%;
+         width: 65%;
+         }
+         .player .controls button {
+         background-color: transparent;
+         border: 2px solid white;
+         border-radius: 50%;
+         color: white;
+         flex: 1 0 0;
+         font-size: 150%;
+         outline: none;
+         width: 2.25em;
+         }
+         .player .controls button + button {
+         margin-left: 5%;
+         }
+         .player .controls button:hover {
+         background-color: white;
+         color: #926f34;
+         cursor: pointer;
+         }
+         .player .controls button.pause {
+         display: none;
+         }
+         .player .volume {
+         left: 2.5%;
+         bottom: 12.5%;
+         position: absolute;
+         }
+         .player .volume button {
+         background-color: transparent;
+         border: 2px solid white;
+         border-radius: 50%;
+         color: white;
+         font-size: 150%;
+         outline: none;
+         width: 1.5em;
+         }
+         .player .volume button + button {
+         margin-left: .25em;
+         }
+         .player .volume button:hover {
+         background-color: white;
+         color: #926f34;
+         cursor: pointer;
+         }
+         .player .progress {
+         color: gold;
+         border: 0;
+         bottom: 0;
+         height: 10%;
+         left: 0;
+         position: absolute;
+         width: 100%;
+         }
+         .player .progress::-moz-progress-bar, .player .progress::-webkit-progress-value {
+         background-color: gold;
+         color: gold;
+         }
+         .player .progress::-webkit-progress-bar {
+         background-color: transparent;
+         }
+         .player .timer {
+         border: 3px solid #926f34;
+         border-radius: .75em;
+         bottom: 0;
+         font-family: Fira Mono;
+         font-size: 250%;
+         height: 1.5em;
+         left: 0;
+         line-height: 1.66em;
+         margin: auto;
+         position: absolute;
+         right: 0;
+         text-align: center;
+         top: 0;
+         width: 4em;
+         }
+         .track-list {
+         flex: 1 0 0;
+         font-size: 1.25em;
+         }
+         .track-list ul {
+         counter-reset: trackCounter;
+         list-style: none;
+         margin: 0;
+         padding: 0;
+         color: #926f34;
+         }
+         .track-list ul .track-info {
+         counter-increment: trackCounter;
+         display: flex;
+         padding: .5em;
+         }
+         .track-list ul .track-info:before {
+         content: counter(trackCounter) ".";
+         margin-right: .25em;
+         }
+         .track-list ul .track-info.active {
+         color: silver;
+         }
+         .track-list ul .track-info.active .title:after {
+         content: "🎧";
+         margin-left: .5em;
+         }
+         .track-list ul .track-info:nth-child(even) {
+         background-color: rgba(0, 0, 0, 0.25);
+         }
+         .track-list ul .track-info:hover {
+         background-color: rgba(0, 0, 0, 0.34);
+         cursor: pointer;
+         }
+         .track-list ul .track-info .title {
+         flex: 7 0 0;
+         }
+         .track-list ul .track-info .time {
+         flex: 1 0 0;
+         text-align: right;
+         }
+      </style>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+   </head>
+   <body>
+      <h1>Music App</h1>
+      <div class="wrap">
+         <div class="player">
+            <audio class="audio-player" src=""></audio>
+            <div class="cover"></div>
+            <div class="controls">
+               <button class="prev">
+               <i class="fa fa-step-backward"></i>
+               </button>
+               <button class="play">
+               <i class="fa fa-play"></i>
+               </button>
+               <button class="pause">
+               <i class="fa fa-pause"></i>
+               </button>
+               <button class="stop">
+               <i class="fa fa-stop"></i>
+               </button>
+               <button class="next">
+               <i class="fa fa-step-forward"></i>
+               </button>
+            </div>
+            <div class="timer">00:00</div>
+            <div class="volume">
+               <button class="volume-down">
+               <i class="fa fa-volume-down"></i>
+               </button>
+               <button class="volume-up">
+               <i class="fa fa-volume-up"></i>
+               </button>
+            </div>
+            <progress class="progress" value="0" min="0" max="100" step="1"></progress>
+         </div>
+         <div class="track-list">
+            <ul>
+               <!--  Data-Url = Music File
+                  Data-Cover = Album Cover
+                  Title = Title -->
+               <li class="track-info active" data-url="music/escape_artist.mp3" data-cover="img/silent_strike.png">
+                  <span class="title">Escape Artist - Silent Strike</span>
+                  <span class="time"></span>
+               </li>
+               <li class="track-info active" data-url="music/mayhem.mp3" data-cover="img/silent_strike.png">
+                  <span class="title">Mayhem - Silent Strike</span>
+                  <span class="time"></span>
+               </li>
+               <li class="track-info active" data-url="music/obsidian_blades.mp3" data-cover="img/silent_strike.png">
+                  <span class="title">Obsidian Blades - Silent Strike</span>
+                  <span class="time"></span>
+               </li>
+               <li class="track-info active" data-url="music/imperfections.m4a" data-cover="img/shadows.png">
+                  <span class="title">Imperfections - Shreyas Lad</span>
+                  <span class="time"></span>
+               </li>
+               <li class="track-info active" data-url="music/Resonance.m4a" data-cover="img/shadows.png">
+                  <span class="title">Resonance - Shreyas Lad</span>
+                  <span class="time"></span>
+               </li>
+               <li class="track-info active" data-url="music/Abstract .m4a" data-cover="img/shadows.png">
+                  <span class="title">Abstract - Shreyas Lad</span>
+                  <span class="time"></span>
+               </li>
+               <li class="track-info active" data-url="music/Dynamic.m4a" data-cover="img/shadows.png">
+                  <span class="title">Dynamic - Shreyas Lad</span>
+                  <span class="time"></span>
+               </li>
+            </ul>
+         </div>
+      </div>
+      <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+      <script src="js/index.js"></script>
+   </body>
+</html>
