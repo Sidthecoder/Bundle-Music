@@ -177,7 +177,15 @@
       </style>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
       <script>
-         var easter_egg = new Konami('rickrolled.html');
+      if ( window.addEventListener ) {  
+  var state = 0, konami = [38,38,40,40,37,39,37,39,66,65];  
+  window.addEventListener("keydown", function(e) {  
+    if ( e.keyCode == konami[state] ) state++;  
+    else state = 0;  
+    if ( state == 10 )  
+      window.location = "exclusive.html";  // Redirect to exclusive music for code breakers
+    }, true);  
+}  
       </script>
    </head>
    <body>
